@@ -33,8 +33,8 @@ export class Home {
     this.sortOpen = false;
   }
   ngOnInit(): void {
-    this.feedbackService.getSuggestions().subscribe((data) => {
-      this.suggestions = data.productRequests;
+    this.feedbackService.getProductRequests().subscribe((data) => {
+      this.suggestions = data;
 
       this.suggestionCount = this.suggestions.filter(
         (suggestion) => suggestion.status === 'suggestion',
@@ -60,10 +60,10 @@ export class Home {
       }
 
       if (this.sortBy === 'Most Comments') {
-        return (b.comments?.length ?? 0) - (a.comments?.length ?? 0);
+        return (b.commentCount) - (a.commentCount);
       }
 
-      return (a.comments?.length ?? 0) - (b.comments?.length ?? 0);
+      return (a.commentCount) - (b.commentCount);
     });
   }
 }

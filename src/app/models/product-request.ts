@@ -6,7 +6,7 @@ export interface ProductRequest {
   upvoted: boolean;
   status: string;
   description: string;
-  comments?: Comment[];
+  commentCount: number;
 }
 
 export interface Comment {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { ProductRequest } from '../models/product-request';
 
 interface FeedbackData {
@@ -11,12 +12,12 @@ interface FeedbackData {
   providedIn: 'root',
 })
 export class Feedbackservice {
-  private dataUrl = 'data.json';
+  private apiUrl = 'http://localhost:8080/api/product-requests';
 
   constructor(private http: HttpClient) {}
 
-  getSuggestions() {
-    return this.http.get<FeedbackData>(this.dataUrl);
+  getProductRequests(): Observable<ProductRequest[]> {
+    return this.http.get<ProductRequest[]>(this.apiUrl);
   }
   toggleUpvote(suggestion: ProductRequest): void {
   suggestion.upvoted = !suggestion.upvoted;
