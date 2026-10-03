@@ -1,0 +1,629 @@
+<div class="min-h-screen bg-[#f7f8fd] px-6 py-8 lg:px-0 lg:py-10">
+
+  <div class="max-w-[730px] mx-auto flex flex-col gap-6">
+
+    <!-- ========================= -->
+    <!-- Navigation -->
+    <!-- ========================= -->
+
+    <div class="flex items-center justify-between">
+
+      <button
+        (click)="goBack()"
+        class="flex items-center gap-3 cursor-pointer group"
+      >
+        <div class="w-[8px] h-[5px] flex items-center justify-center">
+          <img
+            [src]="assets.arrowLeft"
+            alt=""
+            class="w-[8px]"
+          />
+        </div>
+
+        <span
+          class="font-['Jost:Bold'] font-bold text-[14px]
+                 text-[#647196] underline
+                 group-hover:text-[#3a4374]
+                 transition-colors"
+        >
+          Go Back
+        </span>
+      </button>
+
+
+      <button
+        class="bg-[#7c91f9]
+               hover:bg-[#6579d4]
+               text-[#f2f4fe]
+               font-['Jost:Bold']
+               font-bold
+               text-[14px]
+               px-6
+               py-3
+               rounded-[10px]
+               cursor-pointer
+               transition-colors"
+      >
+        Edit Feedback
+      </button>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Suggestion Card -->
+    <!-- ========================= -->
+
+    <div
+      class="bg-white
+             rounded-[10px]
+             p-6
+             flex
+             gap-6
+             items-start"
+    >
+
+      <!-- Upvote -->
+       
+@if (suggestion) {
+      <button
+        (click)="toggleUpvote(suggestion)"
+         class="flex flex-col items-center gap-[6px] px-[14px] py-3 rounded-[10px] min-w-[40px] transition-colors flex-shrink-0 cursor-pointer"
+                  [class.bg-[#4661e6]]="suggestion.upvoted"
+                  [class.text-white]="suggestion.upvoted"
+                  [class.bg-[#f2f4fe]]="!suggestion.upvoted"
+                  [class.text-[#3a4374]]="!suggestion.upvoted"
+      >
+        <!-- Put your upvote UI here -->
+         <img
+                    [src]="suggestion.upvoted ? assets.arrowUpWhite : assets.arrowUp"
+                    alt="upvote"
+                    class="w-[10px] h-[7px]"
+                  />
+        <span class="font-bold">
+          {{ suggestion?.upvotes }}
+        </span>
+      </button>
+
+
+      <!-- Suggestion information -->
+      <div class="flex-1 min-w-0">
+
+        <h2
+          class="font-['Jost:Bold']
+                 font-bold
+                 text-[18px]
+                 text-[#3a4374]
+                 tracking-[-0.25px]
+                 mb-1"
+        >
+          {{ suggestion?.title }}
+        </h2>
+
+
+        <p
+          class="font-['Jost:Regular']
+                 font-normal
+                 text-[16px]
+                 text-[#647196]
+                 mb-3"
+        >
+          {{ suggestion.description }}
+        </p>
+
+
+        <!-- Category -->
+        <span
+          class="inline-block
+                 bg-[#f2f4ff]
+                 text-[#4661e6]
+                 font-bold
+                 text-[13px]
+                 px-4
+                 py-2
+                 rounded-[10px]"
+        >
+          {{ suggestion.category.charAt(0).toUpperCase() + suggestion.category.slice(1) }}
+        </span>
+
+      </div>
+
+
+      <!-- Comment Count -->
+      <div
+        class="flex
+               items-center
+               gap-2
+               flex-shrink-0
+               self-center"
+      >
+
+        <img
+          [src]="assets.comments"
+          alt=""
+          class="w-[18px] h-[16px]"
+        />
+
+        <span
+          class="font-['Jost:Bold']
+                 font-bold
+                 text-[16px]
+                 text-[#3a4374]"
+          [class.opacity-50]="suggestion.commentCount === 0"
+        >
+          {{ suggestion.commentCount }}
+        </span>
+
+      </div>
+    }
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Comments Card -->
+    <!-- ========================= -->
+
+    <div
+      class="bg-white
+             rounded-[10px]
+             p-6
+             lg:p-8"
+    >
+
+      <h3
+        class="font-['Jost:Bold']
+               font-bold
+               text-[18px]
+               text-[#3a4374]
+               tracking-[-0.25px]
+               mb-7"
+      >
+
+        {{ suggestion?.commentCount }}
+ 
+        <span>
+        Comment@if (suggestion?.commentCount !== 1) {s}
+        </span>
+
+      </h3>
+
+
+      <!-- ========================= -->
+      <!-- Comments -->
+      <!-- ========================= -->
+
+      <div
+        class="flex
+               flex-col
+               divide-y
+               divide-[#8c92b3]/25"
+      >
+
+        @for (
+          comment of comments;
+          track comment.id
+        ) {
+
+          <div
+            class="py-6
+                   first:pt-0
+                   last:pb-0"
+          >
+
+            <!-- Comment Header -->
+
+            <div
+              class="flex
+                     items-start
+                     justify-between
+                     gap-4
+                     mb-4"
+            >
+
+              <!-- User -->
+
+              <div
+                class="flex
+                       items-center
+                       gap-4"
+              >
+
+                <img
+                  [src]="comment.userImage"
+                  [alt]="comment.username"
+                  class="w-10 h-10 rounded-full flex-shrink-0"
+                />
+
+                <div>
+
+                  <p
+                    class="font-['Jost:Bold']
+                           font-bold
+                           text-[14px]
+                           text-[#3a4374]
+                           tracking-[-0.19px]"
+                  >
+                    {{ comment.name}}
+                  </p>
+
+                  <p
+                    class="font-['Jost:Regular']
+                           font-normal
+                           text-[14px]
+                           text-[#647196]"
+                  >
+                    @{{ comment.username }}
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <!-- Reply Button -->
+
+              <button
+                (click)="toggleReply(comment.id)"
+                class="font-['Jost:SemiBold']
+                       font-semibold
+                       text-[13px]
+                       text-[#4661e6]
+                       hover:underline
+                       cursor-pointer
+                       flex-shrink-0"
+              >
+                Reply
+              </button>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Comment Body -->
+            <!-- ========================= -->
+
+            <p
+              class="font-['Jost:Regular']
+                     font-normal
+                     text-[15px]
+                     text-[#647196]
+                     leading-relaxed
+                     pl-14"
+            >
+              {{ comment.content }}
+            </p>
+
+
+            <!-- ========================= -->
+            <!-- Reply Input -->
+            <!-- ========================= -->
+
+            @if (replyOpen[comment.id]) {
+
+              <div
+                class="mt-4
+                       pl-14
+                       flex
+                       gap-4
+                       items-start"
+              >
+
+                <textarea
+                  [(ngModel)]="replyText[comment.id]"
+                  class="flex-1
+                         bg-[#f7f8fd]
+                         border
+                         border-[#4661e6]
+                         rounded-[5px]
+                         px-4
+                         py-3
+                         font-['Jost:Regular']
+                         font-normal
+                         text-[15px]
+                         text-[#3a4374]
+                         resize-none
+                         focus:outline-none
+                         focus:ring-1
+                         focus:ring-[#4661e6]"
+                  rows="2"
+                  placeholder="Type your reply..."
+                ></textarea>
+
+
+                <button
+                  (click)="postReply(comment)"
+                  class="bg-[#ad1fea]
+                         hover:bg-[#9a1acc]
+                         text-[#f2f4fe]
+                         font-['Jost:Bold']
+                         font-bold
+                         text-[14px]
+                         px-5
+                         py-3
+                         rounded-[10px]
+                         cursor-pointer
+                         transition-colors
+                         whitespace-nowrap
+                         flex-shrink-0"
+                >
+                  Post Reply
+                </button>
+
+              </div>
+
+            }
+
+
+            <!-- ========================= -->
+            <!-- Nested Replies -->
+            <!-- ========================= -->
+
+            @if (comment.replies && comment.replies.length > 0) {
+
+              <div
+                class="mt-6
+                       pl-14
+                       border-l-2
+                       border-[#647196]/10
+                       flex
+                       flex-col
+                       gap-6"
+              >
+
+                @for (
+                  reply of comment.replies;
+                  track reply.id
+                ) {
+
+                  <div>
+
+                    <!-- Reply Header -->
+
+                    <div
+                      class="flex
+                             items-start
+                             justify-between
+                             gap-4
+                             mb-4"
+                    >
+
+                      <div
+                        class="flex
+                               items-center
+                               gap-4"
+                      >
+
+                        <img
+                          [src]="reply.userImage"
+                          [alt]="reply.username"
+                          class="w-10 h-10 rounded-full flex-shrink-0"
+                        />
+
+                        <div>
+
+                          <p
+                            class="font-['Jost:Bold']
+                                   font-bold
+                                   text-[14px]
+                                   text-[#3a4374]
+                                   tracking-[-0.19px]"
+                          >
+                            {{ reply.username }}
+                          </p>
+
+                          <p
+                            class="font-['Jost:Regular']
+                                   font-normal
+                                   text-[14px]
+                                   text-[#647196]"
+                          >
+                            @{{ reply.username }}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+
+                      <!-- Reply to Reply -->
+
+                      <button
+                        (click)="toggleReply(reply.id)"
+                        class="font-['Jost:SemiBold']
+                               font-semibold
+                               text-[13px]
+                               text-[#4661e6]
+                               hover:underline
+                               cursor-pointer
+                               flex-shrink-0"
+                      >
+                        Reply
+                      </button>
+
+                    </div>
+
+
+                    <!-- Reply Body -->
+
+                    <p
+                      class="font-['Jost:Regular']
+                             font-normal
+                             text-[15px]
+                             text-[#647196]
+                             leading-relaxed
+                             pl-14"
+                    >
+
+                      <span
+                        class="font-['Jost:Bold']
+                               font-bold
+                               text-[#ad1fea]"
+                      >
+                        @{{ reply.replyingTo }}
+                      </span>
+
+                      {{ reply.content }}
+
+                    </p>
+
+
+                    <!-- Reply-to-Reply Input -->
+
+                    @if (replyOpen[reply.id]) {
+
+                      <div
+                        class="mt-4
+                               pl-14
+                               flex
+                               gap-4
+                               items-start"
+                      >
+
+                        <textarea
+                          [(ngModel)]="replyText[reply.id]"
+                          class="flex-1
+                                 bg-[#f7f8fd]
+                                 border
+                                 border-[#4661e6]
+                                 rounded-[5px]
+                                 px-4
+                                 py-3
+                                 font-['Jost:Regular']
+                                 font-normal
+                                 text-[15px]
+                                 text-[#3a4374]
+                                 resize-none
+                                 focus:outline-none
+                                 focus:ring-1
+                                 focus:ring-[#4661e6]"
+                          rows="2"
+                          placeholder="Type your reply..."
+                        ></textarea>
+
+
+                        <button
+                          (click)="postReplyToReply(comment, reply)"
+                          class="bg-[#ad1fea]
+                                 hover:bg-[#9a1acc]
+                                 text-[#f2f4fe]
+                                 font-['Jost:Bold']
+                                 font-bold
+                                 text-[14px]
+                                 px-5
+                                 py-3
+                                 rounded-[10px]
+                                 cursor-pointer
+                                 transition-colors
+                                 whitespace-nowrap
+                                 flex-shrink-0"
+                        >
+                          Post Reply
+                        </button>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Add Comment -->
+    <!-- ========================= -->
+
+    <div
+      class="bg-white
+             rounded-[10px]
+             p-6
+             lg:p-8"
+    >
+
+      <h3
+        class="font-['Jost:Bold']
+               font-bold
+               text-[18px]
+               text-[#3a4374]
+               tracking-[-0.25px]
+               mb-6"
+      >
+        Add Comment
+      </h3>
+
+
+      <textarea
+        [(ngModel)]="newComment"
+        class="w-full
+               bg-[#f7f8fd]
+               border
+               border-[#4661e6]
+               rounded-[5px]
+               px-4
+               py-4
+               font-['Jost:Regular']
+               font-normal
+               text-[15px]
+               text-[#3a4374]
+               resize-none
+               focus:outline-none
+               focus:ring-1
+               focus:ring-[#4661e6]
+               mb-4"
+        rows="3"
+        placeholder="Type your comment here"
+        maxlength="250"
+      ></textarea>
+
+
+      <div
+        class="flex
+               items-center
+               justify-between"
+      >
+
+        <p
+          class="font-['Jost:Regular']
+                 font-normal
+                 text-[15px]
+                 text-[#647196]"
+        >
+          {{ 250 - newComment.length }} characters left
+        </p>
+
+
+        <button
+          (click)="postComment()"
+          class="bg-[#c75af6]
+                 hover:bg-[#a63fd4]
+                 text-[#f2f4fe]
+                 font-['Jost:Bold']
+                 font-bold
+                 text-[14px]
+                 px-6
+                 py-3
+                 rounded-[10px]
+                 cursor-pointer"
+        >
+          Post Comment
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

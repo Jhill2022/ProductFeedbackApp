@@ -189,6 +189,10 @@
             </div>
           } @else {
             @for (suggestion of getSortedFiltered(); track suggestion.id) {
+               <a
+    [routerLink]="['/suggestions', suggestion.id]"
+    class="block"
+  >
               <article
                 class="bg-white rounded-[10px] p-6 flex gap-6 items-start cursor-pointer hover:shadow-md transition-shadow"
               >
@@ -241,6 +245,7 @@
                   </span>
                 </div>
               </article>
+              </a>
             }
           }
         </div>

@@ -12,10 +12,13 @@ export interface ProductRequest {
 export interface Comment {
   id: number;
   content: string;
-  user: User;
-  replies?: Reply[];
+  userId: number;
+  productRequestId: number;
+  name: string;
+  username: string;
+  userImage: string;
+  replies: Reply[];
 }
-
 export interface User {
   image: string;
   name: string;
@@ -23,7 +26,12 @@ export interface User {
 }
 
 export interface Reply {
+  id: number;
   content: string;
+  userId: number;
+  commentId: number;
+  replyToUserId: number;
+  username: string;
+  userImage: string;
   replyingTo: string;
-  user: User;
 }
