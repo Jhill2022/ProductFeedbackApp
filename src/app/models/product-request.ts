@@ -31,6 +31,7 @@ export interface Reply {
   userId: number;
   commentId: number;
   replyToUserId: number;
+  name: string;
   username: string;
   userImage: string;
   replyingTo: string;

@@ -2,12 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Feedbackservice } from '../../services/feedbackservice';
-import { ProductRequest, Comment, Reply} from '../../models/product-request';
+import { ProductRequest, Comment, Reply } from '../../models/product-request';
 import { ASSETS } from '../../../../public/assets/shared/assets';
-
-
-
-
 
 @Component({
   selector: 'app-suggestion-detail',
@@ -16,7 +12,7 @@ import { ASSETS } from '../../../../public/assets/shared/assets';
   styleUrl: './suggestion-detail.css',
 })
 export class SuggestionDetail implements OnInit {
-  assets = ASSETS
+  assets = ASSETS;
   // The product we're displaying
   suggestion: ProductRequest | null = null;
 
@@ -65,7 +61,16 @@ export class SuggestionDetail implements OnInit {
 
   loadComments(productId: number): void {
     this.feedbackService.getCommentsByProduct(productId).subscribe((comments) => {
+      // First store the comments
       this.comments = comments;
+
+      // Then load the replies for each comment
+      this.comments.forEach((comment) => {
+        this.feedbackService.getRepliesByComment(comment.id).subscribe((replies) => {
+          // Put the replies inside this comment
+          comment.replies = replies;
+        });
+      });
     });
   }
 
@@ -96,14 +101,19 @@ export class SuggestionDetail implements OnInit {
       return;
     }
 
-    console.log('Reply to comment:', comment.id, text);
+    const reply = {
+      content: text,
+      userId: 1,
+      commentId: comment.id,
+      replyToUserId: comment.userId,
+    };
 
-    // We'll connect this to Spring Boot
-    // after the GET requests are working.
+    this.feedbackService.postReply(reply).subscribe((newReply) => {
+      comment.replies.push(newReply);
 
-    this.replyText[comment.id] = '';
-
-    this.replyOpen[comment.id] = false;
+      this.replyText[comment.id] = '';
+      this.replyOpen[comment.id] = false;
+    });
   }
 
   // ==========================================
@@ -137,19 +147,26 @@ export class SuggestionDetail implements OnInit {
       return;
     }
 
-    console.log('New comment:', text);
+    const comment = {
+      content: text,
+      userId: 1,
+      productRequestId: this.suggestion!.id,
+    };
 
-    // We'll connect this to POST /api/comments
-    // after the GET functionality is working.
+    this.feedbackService.postComment(comment).subscribe(() => {
+      this.newComment = '';
 
-    this.newComment = '';
+      this.loadComments(this.suggestion!.id);
+
+      this.loadProduct(this.suggestion!.id);
+    });
   }
 
   // ==========================================
   // Upvote
   // ==========================================
 
-   toggleUpvote(suggestion: ProductRequest): void {
+  toggleUpvote(suggestion: ProductRequest): void {
     this.feedbackService.toggleUpvote(suggestion);
   }
 }
